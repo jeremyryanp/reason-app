@@ -31,6 +31,20 @@ type article = {
   author,
 };
 
+type file = {
+  createDate: Js.Date.t,
+  createUser: string,
+  fileSize: int,
+  folder: string,
+  guid: string,
+  name: string,
+  sortOrder: int,
+  storageFullPath: string,
+  storageFileName: string,
+  dateType: string,
+  updateDate: Js.Date.t,
+};
+
 type profile = {
   username: string,
   bio: option(string),
@@ -47,6 +61,8 @@ type comment = {
 };
 
 type remoteArticles = RemoteData.t(list(article), string);
+
+type remoteFiles = RemoteData.t(list(file), string);
 
 type remoteComments = RemoteData.t(list(comment), string);
 

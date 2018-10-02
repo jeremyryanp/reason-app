@@ -27,18 +27,19 @@ let make =
         <div className="row">
           <div className="col-md-6 offset-md-3 col-xs-12">
             <h1 className="text-xs-center">
-              ((register ? "Sign up" : "Sign in") |> strEl)
+              {(register ? "Sign up" : "Sign in") |> strEl}
             </h1>
-            <p className="text-xs-center">
-              (
-                register ?
-                  <a href="/#/login"> ("Have an account?" |> strEl) </a> :
-                  <a href="/#/register"> ("Need an account?" |> strEl) </a>
-              )
-            </p>
+            /*
+             <p className="text-xs-center">
+               (
+                 register ?
+                   <a href="/#/login"> ("Have an account?" |> strEl) </a> :
+                   <a href="/#/register"> ("Need an account?" |> strEl) </a>
+               )
+             </p>*/
             <Errors data=errors />
             <form onSubmit>
-              (
+              {
                 register ?
                   <fieldset className="form-group">
                     <input
@@ -52,12 +53,12 @@ let make =
                     />
                   </fieldset> :
                   nullEl
-              )
+              }
               <fieldset className="form-group">
                 <input
                   className="form-control form-control-lg"
                   type_="text"
-                  placeholder="Email"
+                  placeholder="UIN"
                   value=email
                   onChange=onEmailChange
                   onBlur=onEmailBlur
@@ -78,7 +79,7 @@ let make =
               <button
                 disabled=submitting
                 className="btn btn-lg btn-primary pull-xs-right">
-                (
+                {
                   (
                     switch (register, submitting) {
                     | (true, true)
@@ -88,7 +89,7 @@ let make =
                     }
                   )
                   |> strEl
-                )
+                }
               </button>
             </form>
           </div>
