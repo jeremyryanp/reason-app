@@ -22,6 +22,21 @@ let article = (json: Js.Json.t): Types.article =>
     author: json |> field("author", author),
   };
 
+let file = (json: Js.Json.t): Types.file =>
+  Json.Decode.{
+    createDate: json |> field("createDate", date),
+    createUser: json |> field("createUser", string),
+    fileSize: json |> field("fileSize", int),
+    folder: json |> field("folder", string),
+    guid: json |> field("guid", string),
+    name: json |> field("name", string),
+    sortOrder: json |> field("sortOrder", int),
+    storageFullPath: json |> field("storageFullPath", string),
+    storageFileName: json |> field("storageFileName", string),
+    dateType: json |> field("type", string),
+    updateDate: json |> field("updateDate", date),
+  };
+
 let profile = (json: Js.Json.t): Types.profile =>
   Json.Decode.{
     username: json |> field("username", string),

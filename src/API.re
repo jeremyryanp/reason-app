@@ -1,6 +1,8 @@
 open Utils;
 
-let host = "https://conduit.productionready.io";
+[@bs.val] external alert: string => unit = "alert";
+
+let host = "http://localhost:8080/rest-client";
 
 let optToQueryString = (prefix, opt) =>
   opt->(Belt.Option.mapWithDefault("", (++)(prefix)));
@@ -61,6 +63,21 @@ let makeFetchInit =
     ~headers=headers |> Fetch.HeadersInit.make,
     (),
   );
+};
+
+let listFiles = (~limit=20, ~offset=0, ()) => {
+  open Js.Promise;
+
+  let url =
+    host
+    ++ "/api/content/file"
+    ++ "limit="
+    ++ string_of_int(limit)
+    ++ "&offset="
+    ++ string_of_int(offset);
+
+  url->(Fetch.fetchWithInit(makeFetchInit(~authorization=true, ())))
+  |> then_(getResultIfOk);
 };
 
 let listArticlesFeed = (~limit=20, ~offset=0, ()) => {
@@ -314,7 +331,9 @@ let register = (~email, ~password, ~username, ()) => {
 
 let login = (~email, ~password, ()) => {
   open Js.Promise;
-  let url = host ++ "/api/users/login";
+  let url = host ++ "/api/user/login";
+
+  alert("lets do this");
 
   url
   ->(
@@ -329,7 +348,7 @@ let login = (~email, ~password, ()) => {
                   (
                     "user",
                     [
-                      ("email", email |> string),
+                      ("uin", email |> string),
                       ("password", password |> string),
                     ]
                     |> object_,
