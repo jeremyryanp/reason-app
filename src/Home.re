@@ -1,5 +1,7 @@
 open Utils;
 
+[@bs.val] external alert: string => unit = "alert";
+
 type feed =
   | Tag(string)
   | Global
@@ -19,6 +21,7 @@ type state = {
   files: Types.remoteFiles,
   tags: Types.remoteTags,
   articlesCount: float,
+  filesCount: float,
   currentPage: int,
   feed,
   togglingFavorites: Belt.Map.String.t(Types.remoteAction),
@@ -36,19 +39,18 @@ let loadGlobalFeed = (~tag=?, ~page=1, _payload, {ReasonReact.send, handle}) => 
        switch (result) {
        | Belt.Result.Ok(json) =>
          let files =
-           json |> Json.Decode.(array(Decoder.file)) |> Belt.List.fromArray;
-         ();
-       /*
-         let articlesCount =
-           json |> Json.Decode.(field("articlesCount", Json.Decode.float));
-         send(
-           UpdateArticles((
-             RemoteData.Success(articles),
-             articlesCount,
-             page,
-           )),
-         );
-        */
+           json
+           |> Json.Decode.(field("files", array(Decoder.file)))
+           |> Belt.List.fromArray;
+
+         /*
+          let filesCount = 1.
+              json
+              |> Json.Decode.(field("filesCount", Json.Decode.float));
+
+              alert("got filesCount!!!");
+          */
+         send(UpdateFiles((RemoteData.Success(files), 10., page)));
        | Error(_) =>
          send(
            UpdateFiles((
@@ -63,7 +65,7 @@ let loadGlobalFeed = (~tag=?, ~page=1, _payload, {ReasonReact.send, handle}) => 
   |> catch(_error =>
        send(
          UpdateFiles((
-           RemoteData.Failure("failed to fetch list of files"),
+           RemoteData.Failure("failed to fetch list of files!"),
            0.,
            1,
          )),
@@ -92,9 +94,9 @@ let onGlobalFeedClick = (~feed, event, {ReasonReact.send}) => {
 };
 
 let initialData = (~user, _payload, {ReasonReact.state, send}) => {
-  let {articles} = state;
-  switch (articles, user) {
-  | (NotAsked, RemoteData.Success(_)) => send(ChangeFeed(Your, 1))
+  let {files} = state;
+  switch (files, user) {
+  | (NotAsked, RemoteData.Success(_)) => send(ChangeFeed(Global, 1))
   | (NotAsked, Failure(_)) => send(ChangeFeed(Global, 1))
   | (NotAsked, NotAsked | Loading)
   | (
@@ -147,6 +149,7 @@ let make = (~user, _children) => {
     files: RemoteData.NotAsked,
     tags: RemoteData.NotAsked,
     articlesCount: 0.,
+    filesCount: 0.,
     currentPage: 1,
     feed: Global,
     togglingFavorites: Belt.Map.String.empty,
@@ -165,10 +168,8 @@ let make = (~user, _children) => {
           ({handle}) => {
             switch (feed) {
             | Global => handle(loadGlobalFeed(~page), ())
-            /*
-             | Your => handle(loadYourFeed(~page), ())
-             */
-            | Tag(tag) => handle(loadGlobalFeed(~page, ~tag), ())
+            | Your => handle(loadGlobalFeed(~page), ())
+            | Tag(tag) => handle(loadGlobalFeed(~page), ())
             };
             ignore();
           }
@@ -189,21 +190,36 @@ let make = (~user, _children) => {
       ReasonReact.Update({...state, articles});
     | UpdateArticles((articles, articlesCount, currentPage)) =>
       ReasonReact.Update({...state, articles, articlesCount, currentPage})
+    | UpdateFile(guid, file) =>
+      let files =
+        state.files
+        |> RemoteData.map(files =>
+             files
+             ->(Belt.List.map((x: Types.file) => x.guid === guid ? file : x))
+           );
+      ReasonReact.Update({...state, files});
+    | UpdateFiles((files, filesCount, currentPage)) =>
+      ReasonReact.Update({...state, files, filesCount, currentPage})
     },
   didMount: ({handle}) => handle(initialData(~user), ()),
   didUpdate: ({newSelf}) => newSelf.handle(initialData(~user), ()),
   render: ({state, handle, send}) => {
-    let {articles, tags, articlesCount, currentPage, feed, togglingFavorites} = state;
+    let {
+      articles,
+      files,
+      tags,
+      articlesCount,
+      filesCount,
+      currentPage,
+      feed,
+      togglingFavorites,
+    } = state;
     <div className="home-page">
       <div className="banner">
-
-          <div className="container">
-            <h1 className="logo-font"> {"content" |> strEl} </h1>
-          </div>
+        <div className="container">
+          <h1 className="logo-font"> {"content" |> strEl} </h1>
         </div>
-        /*
-         <p> ("A place to share your files." |> strEl) </p>
-         */
+      </div>
       <div className="container page">
         <div className="row">
           <div className="col-md-9">
@@ -252,7 +268,7 @@ let make = (~user, _children) => {
               </ul>
             </div>
             {
-              switch (articles) {
+              switch (files) {
               | NotAsked =>
                 <div className="article-preview">
                   {"Initializing..." |> strEl}
@@ -268,21 +284,23 @@ let make = (~user, _children) => {
               | Success(data) =>
                 data
                 ->(
-                    Belt.List.mapU((. value: Types.article) =>
-                      <ArticleItem
-                        key={value.slug}
+                    Belt.List.mapU((. value: Types.file) =>
+                      <FileItem
+                        key={value.guid}
                         value
-                        onFavoriteClick={handle(favoriteArticle(~user))}
-                        favoriteDisabled={
-                          togglingFavorites
-                          ->(
-                              Belt.Map.String.getWithDefault(
-                                value.slug,
-                                RemoteData.NotAsked,
-                              )
-                            )
-                          === RemoteData.Loading
-                        }
+                        /*
+                         onFavoriteClick={handle(favoriteArticle(~user))}
+                         favoriteDisabled={
+                           togglingFavorites
+                           ->(
+                               Belt.Map.String.getWithDefault(
+                                 value.slug,
+                                 RemoteData.NotAsked,
+                               )
+                             )
+                           === RemoteData.Loading
+                         }
+                         */
                       />
                     )
                   )
@@ -291,13 +309,13 @@ let make = (~user, _children) => {
               }
             }
             {
-              switch (articles) {
+              switch (files) {
               | NotAsked
               | Loading
               | Failure(_) => nullEl
               | Success(_) =>
                 <Pagination
-                  totalCount=articlesCount
+                  totalCount=filesCount
                   perPage=pageNum
                   onPageClick=(page => send(ChangeFeed(feed, page)))
                   currentPage
@@ -305,43 +323,6 @@ let make = (~user, _children) => {
               }
             }
           </div>
-          <div
-            className="col-md-3"
-            /*
-               <div className="sidebar">
-                 <p> ("Popular Tags" |> strEl) </p>
-                 <div className="tag-list">
-                   (
-                     switch (tags) {
-                     | NotAsked => "Initializing..." |> strEl
-                     | Loading => "Loading..." |> strEl
-                     | Failure(error) => "ERROR: " ++ error |> strEl
-                     | Success(data) =>
-                       data
-                       ->(
-                           Belt.List.mapU((. item) =>
-                             <a
-                               key=item
-                               className="tag-pill tag-default"
-                               href="#"
-                               onClick=(
-                                 event => {
-                                   event->ReactEvent.Mouse.preventDefault;
-                                   send(ChangeFeed(Tag(item), 1));
-                                 }
-                               )>
-                               (item |> strEl)
-                             </a>
-                           )
-                         )
-                       |> Belt.List.toArray
-                       |> arrayEl
-                     }
-                   )
-                 </div>
-               </div>
-             */
-          />
         </div>
       </div>
     </div>;

@@ -13,6 +13,7 @@ var Utils$ReasonReactRealworldExampleApp = require("./Utils.bs.js");
 var Editor$ReasonReactRealworldExampleApp = require("./Editor.bs.js");
 var Article$ReasonReactRealworldExampleApp = require("./Article.bs.js");
 var Decoder$ReasonReactRealworldExampleApp = require("./Decoder.bs.js");
+var Details$ReasonReactRealworldExampleApp = require("./Details.bs.js");
 var Profile$ReasonReactRealworldExampleApp = require("./Profile.bs.js");
 var Register$ReasonReactRealworldExampleApp = require("./Register.bs.js");
 var Settings$ReasonReactRealworldExampleApp = require("./Settings.bs.js");
@@ -62,12 +63,15 @@ function urlToRoute(url) {
               case "article" : 
                   var slug = hash[2];
                   return /* Article */Block.__(1, [slug]);
+              case "details" : 
+                  var guid = hash[2];
+                  return /* Details */Block.__(2, [guid]);
               case "editor" : 
                   var slug$1 = hash[2];
                   return /* Editor */Block.__(0, [slug$1]);
               case "profile" : 
                   var author = hash[2];
-                  return /* Profile */Block.__(2, [/* Author */Block.__(0, [author])]);
+                  return /* Profile */Block.__(3, [/* Author */Block.__(0, [author])]);
               default:
                 return /* Home */0;
             }
@@ -82,7 +86,7 @@ function urlToRoute(url) {
               var author$1 = hash[2];
               var match$6 = hash[3];
               if (match$6 === "favorites") {
-                return /* Profile */Block.__(2, [/* Favorited */Block.__(1, [author$1])]);
+                return /* Profile */Block.__(3, [/* Favorited */Block.__(1, [author$1])]);
               } else {
                 return /* Home */0;
               }
@@ -159,7 +163,7 @@ function make() {
                           href: "/#/editor"
                         }, React.createElement("i", {
                               className: "ion-compose"
-                            }), Utils$ReasonReactRealworldExampleApp.strEl(" New Post")));
+                            }), Utils$ReasonReactRealworldExampleApp.strEl(" Upload File")));
               }
               var tmp$2;
               tmp$2 = typeof user === "number" || !user.tag ? Utils$ReasonReactRealworldExampleApp.nullEl : React.createElement("li", {
@@ -182,12 +186,12 @@ function make() {
                 tmp$4 = Utils$ReasonReactRealworldExampleApp.nullEl;
               } else {
                 var match = user[0];
-                var username = match[/* username */7];
-                var image = match[/* image */4];
+                var username = match[/* username */4];
+                var image = match[/* image */2];
                 tmp$4 = React.createElement("li", {
                       className: "nav-item"
                     }, React.createElement("a", {
-                          className: makeLinkClass(route, /* Profile */Block.__(2, [/* Author */Block.__(0, [username])])),
+                          className: makeLinkClass(route, /* Profile */Block.__(3, [/* Author */Block.__(0, [username])])),
                           href: "/#/profile/" + username
                         }, image !== undefined ? React.createElement("img", {
                                 className: "user-pic",
@@ -222,6 +226,9 @@ function make() {
                       tmp$5 = ReasonReact.element(undefined, undefined, Article$ReasonReactRealworldExampleApp.make(user, route[0], /* array */[]));
                       break;
                   case 2 : 
+                      tmp$5 = ReasonReact.element(undefined, undefined, Details$ReasonReactRealworldExampleApp.make(route[0], /* array */[]));
+                      break;
+                  case 3 : 
                       tmp$5 = ReasonReact.element(undefined, undefined, Profile$ReasonReactRealworldExampleApp.make(user, route[0], /* array */[]));
                       break;
                   

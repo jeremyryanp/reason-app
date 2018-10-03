@@ -15,6 +15,7 @@ let makeLinkClass = (current, target) =>
 
 let urlToRoute = (url: ReasonReact.Router.url): Types.route => {
   let hash = url.hash |> Js.String.split("/");
+
   switch (hash) {
   | [|"", "login"|] => Login
   | [|"", "register"|] => Register
@@ -22,6 +23,7 @@ let urlToRoute = (url: ReasonReact.Router.url): Types.route => {
   | [|"", "editor"|] => Editor(None)
   | [|"", "editor", slug|] => Editor(Some(slug))
   | [|"", "article", slug|] => Article(slug)
+  | [|"", "details", guid|] => Details(guid)
   | [|"", "profile", author|] => Profile(Types.Author(author))
   | [|"", "profile", author, "favorites"|] =>
     Profile(Types.Favorited(author))
@@ -126,7 +128,7 @@ let make = _children => {
                     }
                     href="/#/editor">
                     <i className="ion-compose" />
-                    {" New Post" |> strEl}
+                    {" Upload File" |> strEl}
                   </a>
                 </li>
               }
@@ -212,6 +214,7 @@ let make = _children => {
                )
           </PrivateRoute>
         | Editor(slug) => <Editor slug />
+        | Details(guid) => <Details guid />
         | Profile(author) => <Profile author user />
         | Article(slug) => <Article slug user />
         | Home => <Home user />

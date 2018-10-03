@@ -10,7 +10,7 @@ var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
 var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
 var Utils$ReasonReactRealworldExampleApp = require("./Utils.bs.js");
 
-var host = "http://localhost:8080/rest-client";
+var host = "http://osrs-1500001678:8080/rest-client";
 
 function optToQueryString(prefix, opt) {
   return Belt_Option.mapWithDefault(opt, "", (function (param) {
@@ -25,11 +25,10 @@ function getResultIfOk(res) {
               }));
 }
 
-function makeFetchInit(body, $staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, _) {
-  var method__ = $staropt$star !== undefined ? $staropt$star : /* Get */0;
-  var includeCookie = $staropt$star$1 !== undefined ? $staropt$star$1 : true;
-  var authorization = $staropt$star$2 !== undefined ? $staropt$star$2 : false;
-  var jsonContentType = $staropt$star$3 !== undefined ? $staropt$star$3 : false;
+function makeFetchInit(body, _, $staropt$star, $staropt$star$1, $staropt$star$2, _$1) {
+  var includeCookie = $staropt$star !== undefined ? $staropt$star : true;
+  var authorization = $staropt$star$1 !== undefined ? $staropt$star$1 : false;
+  var jsonContentType = $staropt$star$2 !== undefined ? $staropt$star$2 : false;
   var obj = { };
   if (authorization) {
     obj = Object.assign(obj, Belt_Option.mapWithDefault(Utils$ReasonReactRealworldExampleApp.getCookie("token"), { }, (function (value) {
@@ -45,14 +44,19 @@ function makeFetchInit(body, $staropt$star, $staropt$star$1, $staropt$star$2, $s
   }
   var headers = obj;
   var credentials = includeCookie ? /* Include */2 : undefined;
-  return Fetch.RequestInit[/* make */0](method__, Js_primitive.some(headers), body, undefined, undefined, undefined, credentials, undefined, undefined, undefined, undefined)(/* () */0);
+  return Fetch.RequestInit[/* make */0](/* Get */0, Js_primitive.some(headers), body, undefined, undefined, undefined, credentials, undefined, undefined, undefined, undefined)(/* () */0);
 }
 
 function listFiles($staropt$star, $staropt$star$1, _) {
   var limit = $staropt$star !== undefined ? $staropt$star : 20;
   var offset = $staropt$star$1 !== undefined ? $staropt$star$1 : 0;
-  var url = host + ("/api/content/filelimit=" + (String(limit) + ("&offset=" + String(offset))));
-  return fetch(url, makeFetchInit(undefined, undefined, undefined, true, undefined, /* () */0)).then(getResultIfOk);
+  var url = host + ("/api/content/file/limit=" + (String(limit) + ("&offset=" + String(offset))));
+  return fetch(url).then(getResultIfOk);
+}
+
+function getFile(guid, _) {
+  var url = host + ("/api/content/file/guid=" + guid);
+  return fetch(url).then(getResultIfOk);
 }
 
 function listArticlesFeed($staropt$star, $staropt$star$1, _) {
@@ -70,7 +74,7 @@ function listArticles(tag, author, favorited, $staropt$star, $staropt$star$1, _)
 }
 
 function tags() {
-  var url = "http://localhost:8080/rest-client/api/tags";
+  var url = "http://osrs-1500001678:8080/rest-client/api/tags";
   return fetch(url, makeFetchInit(undefined, undefined, undefined, undefined, undefined, /* () */0)).then(getResultIfOk);
 }
 
@@ -137,12 +141,12 @@ function deleteComment(slug, id, _) {
 }
 
 function user() {
-  var url = "http://localhost:8080/rest-client/api/user";
-  return fetch(url, makeFetchInit(undefined, undefined, undefined, true, undefined, /* () */0)).then(getResultIfOk);
+  var url = "http://osrs-1500001678:8080/rest-client/api/user";
+  return fetch(url).then(getResultIfOk);
 }
 
 function updateUser(email, username, password, image, bio, _) {
-  var url = "http://localhost:8080/rest-client/api/user";
+  var url = "http://osrs-1500001678:8080/rest-client/api/user";
   return fetch(url, makeFetchInit(Js_primitive.some(Json.stringify(Json_encode.object_(/* :: */[
                                 /* tuple */[
                                   "user",
@@ -183,7 +187,7 @@ function updateUser(email, username, password, image, bio, _) {
 }
 
 function register(email, password, username, _) {
-  var url = "http://localhost:8080/rest-client/api/users";
+  var url = "http://osrs-1500001678:8080/rest-client/api/users";
   return fetch(url, makeFetchInit(Js_primitive.some(Json.stringify(Json_encode.object_(/* :: */[
                                 /* tuple */[
                                   "user",
@@ -212,8 +216,7 @@ function register(email, password, username, _) {
 }
 
 function login(email, password, _) {
-  var url = "http://localhost:8080/rest-client/api/user/login";
-  alert("lets do this");
+  var url = "http://osrs-1500001678:8080/rest-client/api/user/login";
   return fetch(url, makeFetchInit(Js_primitive.some(Json.stringify(Json_encode.object_(/* :: */[
                                 /* tuple */[
                                   "user",
@@ -236,7 +239,7 @@ function login(email, password, _) {
 }
 
 function createArticle(title, description, body, tagList, _) {
-  var url = "http://localhost:8080/rest-client/api/articles";
+  var url = "http://osrs-1500001678:8080/rest-client/api/articles";
   return fetch(url, makeFetchInit(Js_primitive.some(Json.stringify(Json_encode.object_(/* :: */[
                                 /* tuple */[
                                   "article",
@@ -327,6 +330,7 @@ exports.optToQueryString = optToQueryString;
 exports.getResultIfOk = getResultIfOk;
 exports.makeFetchInit = makeFetchInit;
 exports.listFiles = listFiles;
+exports.getFile = getFile;
 exports.listArticlesFeed = listArticlesFeed;
 exports.listArticles = listArticles;
 exports.tags = tags;

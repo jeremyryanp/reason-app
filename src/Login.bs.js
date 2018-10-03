@@ -124,7 +124,7 @@ function make(onSuccessLogin, _) {
                                             var user = Json_decode.field("user", Decoder$ReasonReactRealworldExampleApp.user, result[0]);
                                             Curry._1(notifyOnSuccess, undefined);
                                             Curry._1(reset, /* () */0);
-                                            Utils$ReasonReactRealworldExampleApp.setCookie("token", user[/* token */5]);
+                                            Utils$ReasonReactRealworldExampleApp.setCookie("token", user[/* token */3]);
                                             Curry._1(onSuccessLogin, /* () */0);
                                             ReasonReact.Router[/* push */0]("/#/");
                                           }

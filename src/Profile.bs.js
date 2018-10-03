@@ -114,7 +114,7 @@ function followAuthorOrRedirectToSetting(profile, user, _, param) {
     return /* () */0;
   } else {
     var profileVal = profile[0];
-    if (user[0][/* username */7] === profileVal[/* username */0]) {
+    if (user[0][/* username */4] === profileVal[/* username */0]) {
       return ReasonReact.Router[/* push */0]("/#/settings");
     } else {
       var following = profileVal[/* following */3];
@@ -222,7 +222,7 @@ function make(user, author, _) {
               }
               var tmp$3;
               var exit = 0;
-              if (typeof profile === "number" || !(profile.tag === 1 && !(typeof user === "number" || !(user.tag === 1 && user[0][/* username */7] === profile[0][/* username */0])))) {
+              if (typeof profile === "number" || !(profile.tag === 1 && !(typeof user === "number" || !(user.tag === 1 && user[0][/* username */4] === profile[0][/* username */0])))) {
                 exit = 1;
               } else {
                 tmp$3 = React.createElement("i", {
@@ -240,7 +240,7 @@ function make(user, author, _) {
               } else if (profile.tag) {
                 var profileVal = profile[0];
                 var exit$1 = 0;
-                if (typeof user === "number" || !(user.tag === 1 && user[0][/* username */7] === profileVal[/* username */0])) {
+                if (typeof user === "number" || !(user.tag === 1 && user[0][/* username */4] === profileVal[/* username */0])) {
                   exit$1 = 1;
                 } else {
                   tmp$4 = Utils$ReasonReactRealworldExampleApp.strEl(" Edit Profile Settings");

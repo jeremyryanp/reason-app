@@ -1,12 +1,9 @@
 module User = {
   type t = {
     bio: option(string),
-    createdAt: Js.Date.t,
     email: string,
-    id: int,
     image: option(string),
     token: string,
-    updatedAt: Js.Date.t,
     username: string,
   };
 };
@@ -34,14 +31,12 @@ type article = {
 type file = {
   createDate: Js.Date.t,
   createUser: string,
+  storedFileName: string,
   fileSize: int,
   folder: string,
   guid: string,
   name: string,
   sortOrder: int,
-  storageFullPath: string,
-  storageFileName: string,
-  dateType: string,
   updateDate: Js.Date.t,
 };
 
@@ -68,6 +63,8 @@ type remoteComments = RemoteData.t(list(comment), string);
 
 type remoteArticle = RemoteData.t(article, string);
 
+type remoteFile = RemoteData.t(file, string);
+
 type remoteProfile = RemoteData.t(profile, string);
 
 type remoteUser = RemoteData.t(User.t, string);
@@ -87,4 +84,5 @@ type route =
   | Settings
   | Editor(option(string))
   | Article(string)
+  | Details(string)
   | Profile(articleByAuthor);

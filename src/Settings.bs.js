@@ -209,10 +209,10 @@ function make$1(onLogoutClick, user, _) {
           /* shouldUpdate */component$1[/* shouldUpdate */8],
           /* render */(function () {
               return ReasonReact.element(undefined, undefined, Curry._3(FormContainer[/* make */8], /* record */[
-                              /* image */Belt_Option.getWithDefault(user[/* image */4], ""),
-                              /* username */user[/* username */7],
+                              /* image */Belt_Option.getWithDefault(user[/* image */2], ""),
+                              /* username */user[/* username */4],
                               /* password */"",
-                              /* email */user[/* email */2],
+                              /* email */user[/* email */1],
                               /* bio */Belt_Option.getWithDefault(user[/* bio */0], "")
                             ], (function (state, param) {
                                 var username = state[/* username */1];

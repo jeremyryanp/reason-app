@@ -9,12 +9,11 @@ var RemoteData = require("remotedata-re/src/RemoteData.js");
 var Json_decode = require("@glennsl/bs-json/src/Json_decode.bs.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var API$ReasonReactRealworldExampleApp = require("./API.bs.js");
 var Utils$ReasonReactRealworldExampleApp = require("./Utils.bs.js");
 var Decoder$ReasonReactRealworldExampleApp = require("./Decoder.bs.js");
+var FileItem$ReasonReactRealworldExampleApp = require("./FileItem.bs.js");
 var Pagination$ReasonReactRealworldExampleApp = require("./Pagination.bs.js");
-var ArticleItem$ReasonReactRealworldExampleApp = require("./ArticleItem.bs.js");
 
 function loadGlobalFeed(_, $staropt$star, _$1, param) {
   var send = param[/* send */3];
@@ -34,12 +33,19 @@ function loadGlobalFeed(_, $staropt$star, _$1, param) {
                         1
                       ]]));
             } else {
-              Belt_List.fromArray(Json_decode.array(Decoder$ReasonReactRealworldExampleApp.file, result[0]));
+              var files = Belt_List.fromArray(Json_decode.field("files", (function (param) {
+                          return Json_decode.array(Decoder$ReasonReactRealworldExampleApp.file, param);
+                        }), result[0]));
+              Curry._1(send, /* UpdateFiles */Block.__(6, [/* tuple */[
+                        /* Success */Block.__(1, [files]),
+                        10,
+                        page
+                      ]]));
             }
             return Promise.resolve(/* () */0);
           })).catch((function () {
           return Promise.resolve(Curry._1(send, /* UpdateFiles */Block.__(6, [/* tuple */[
-                              /* Failure */Block.__(0, ["failed to fetch list of files"]),
+                              /* Failure */Block.__(0, ["failed to fetch list of files!"]),
                               0,
                               1
                             ]])));
@@ -74,20 +80,12 @@ function onGlobalFeedClick(feed, $$event, param) {
 }
 
 function initialData(user, _, param) {
-  var articles = param[/* state */1][/* articles */0];
-  var send = param[/* send */3];
-  if (typeof articles === "number" && !(articles !== 0 || typeof user === "number")) {
-    if (user.tag) {
-      return Curry._1(send, /* ChangeFeed */Block.__(1, [
-                    /* Your */1,
-                    1
-                  ]));
-    } else {
-      return Curry._1(send, /* ChangeFeed */Block.__(1, [
-                    /* Global */0,
-                    1
-                  ]));
-    }
+  var files = param[/* state */1][/* files */1];
+  if (typeof files === "number" && !(files !== 0 || typeof user === "number")) {
+    return Curry._1(param[/* send */3], /* ChangeFeed */Block.__(1, [
+                  /* Global */0,
+                  1
+                ]));
   } else {
     return /* () */0;
   }
@@ -155,9 +153,8 @@ function make(user, _) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (param) {
               var state = param[/* state */1];
-              var togglingFavorites = state[/* togglingFavorites */6];
-              var feed = state[/* feed */5];
-              var articles = state[/* articles */0];
+              var feed = state[/* feed */6];
+              var files = state[/* files */1];
               var send = param[/* send */3];
               var handle = param[/* handle */0];
               var tmp;
@@ -179,23 +176,21 @@ function make(user, _) {
               }
               var match$1 = feed === /* Global */0;
               var tmp$1;
-              tmp$1 = typeof articles === "number" ? (
-                  articles === 0 ? React.createElement("div", {
+              tmp$1 = typeof files === "number" ? (
+                  files === 0 ? React.createElement("div", {
                           className: "article-preview"
                         }, Utils$ReasonReactRealworldExampleApp.strEl("Initializing...")) : React.createElement("div", {
                           className: "article-preview"
                         }, Utils$ReasonReactRealworldExampleApp.strEl("Loading..."))
                 ) : (
-                  articles.tag ? Utils$ReasonReactRealworldExampleApp.arrayEl(Belt_List.toArray(Belt_List.mapU(articles[0], (function (value) {
-                                    return ReasonReact.element(value[/* slug */0], undefined, ArticleItem$ReasonReactRealworldExampleApp.make(value, Curry._1(handle, (function (param, param$1) {
-                                                          return favoriteArticle(user, param, param$1);
-                                                        })), Belt_MapString.getWithDefault(togglingFavorites, value[/* slug */0], /* NotAsked */0) === /* Loading */1, /* array */[]));
+                  files.tag ? Utils$ReasonReactRealworldExampleApp.arrayEl(Belt_List.toArray(Belt_List.mapU(files[0], (function (value) {
+                                    return ReasonReact.element(value[/* guid */5], undefined, FileItem$ReasonReactRealworldExampleApp.make(value, /* array */[]));
                                   })))) : React.createElement("div", {
                           className: "article-preview"
-                        }, Utils$ReasonReactRealworldExampleApp.strEl("ERROR: " + articles[0]))
+                        }, Utils$ReasonReactRealworldExampleApp.strEl("ERROR: " + files[0]))
                 );
               var tmp$2;
-              tmp$2 = typeof articles === "number" || articles.tag !== 1 ? Utils$ReasonReactRealworldExampleApp.nullEl : ReasonReact.element(undefined, undefined, Pagination$ReasonReactRealworldExampleApp.make(state[/* currentPage */4], state[/* articlesCount */3], 10, (function (page) {
+              tmp$2 = typeof files === "number" || files.tag !== 1 ? Utils$ReasonReactRealworldExampleApp.nullEl : ReasonReact.element(undefined, undefined, Pagination$ReasonReactRealworldExampleApp.make(state[/* currentPage */5], state[/* filesCount */4], 10, (function (page) {
                             return Curry._1(send, /* ChangeFeed */Block.__(1, [
                                           feed,
                                           page
@@ -233,9 +228,7 @@ function make(user, _) {
                                                     className: "nav-item"
                                                   }, React.createElement("a", {
                                                         className: "nav-link active"
-                                                      }, Utils$ReasonReactRealworldExampleApp.strEl("#" + feed[0]))))), tmp$1, tmp$2), React.createElement("div", {
-                                      className: "col-md-3"
-                                    }))));
+                                                      }, Utils$ReasonReactRealworldExampleApp.strEl("#" + feed[0]))))), tmp$1, tmp$2))));
             }),
           /* initialState */(function () {
               return /* record */[
@@ -243,6 +236,7 @@ function make(user, _) {
                       /* files : NotAsked */0,
                       /* tags : NotAsked */0,
                       /* articlesCount */0,
+                      /* filesCount */0,
                       /* currentPage */1,
                       /* feed : Global */0,
                       /* togglingFavorites */Belt_MapString.empty
@@ -253,7 +247,7 @@ function make(user, _) {
               switch (action.tag | 0) {
                 case 0 : 
                     var value = action[1];
-                    var togglingFavorites = Belt_MapString.update(state[/* togglingFavorites */6], action[0], (function () {
+                    var togglingFavorites = Belt_MapString.update(state[/* togglingFavorites */7], action[0], (function () {
                             return value;
                           }));
                     return /* Update */Block.__(0, [/* record */[
@@ -261,8 +255,9 @@ function make(user, _) {
                                 /* files */state[/* files */1],
                                 /* tags */state[/* tags */2],
                                 /* articlesCount */state[/* articlesCount */3],
-                                /* currentPage */state[/* currentPage */4],
-                                /* feed */state[/* feed */5],
+                                /* filesCount */state[/* filesCount */4],
+                                /* currentPage */state[/* currentPage */5],
+                                /* feed */state[/* feed */6],
                                 /* togglingFavorites */togglingFavorites
                               ]]);
                 case 1 : 
@@ -274,22 +269,26 @@ function make(user, _) {
                                 /* files */state[/* files */1],
                                 /* tags */state[/* tags */2],
                                 /* articlesCount */state[/* articlesCount */3],
+                                /* filesCount */state[/* filesCount */4],
                                 /* currentPage */page,
                                 /* feed */feed,
-                                /* togglingFavorites */state[/* togglingFavorites */6]
+                                /* togglingFavorites */state[/* togglingFavorites */7]
                               ],
                               (function (param) {
                                   var handle = param[/* handle */0];
                                   if (typeof feed === "number") {
                                     if (feed !== 0) {
-                                      throw [
-                                            Caml_builtin_exceptions.match_failure,
-                                            /* tuple */[
-                                              "Home.re",
-                                              166,
-                                              12
-                                            ]
-                                          ];
+                                      Curry._2(handle, (function (eta) {
+                                              var arg = page;
+                                              var partial_arg = (function (param) {
+                                                    return (function (param$1, param$2) {
+                                                        return loadGlobalFeed(param, arg, param$1, param$2);
+                                                      });
+                                                  })(undefined);
+                                              return (function (param) {
+                                                  return partial_arg(eta, param);
+                                                });
+                                            }), /* () */0);
                                     } else {
                                       Curry._2(handle, (function (eta) {
                                               var arg = page;
@@ -304,10 +303,16 @@ function make(user, _) {
                                             }), /* () */0);
                                     }
                                   } else {
-                                    var partial_arg = page;
-                                    var partial_arg$1 = feed[0];
-                                    Curry._2(handle, (function (param, param$1) {
-                                            return loadGlobalFeed(partial_arg$1, partial_arg, param, param$1);
+                                    Curry._2(handle, (function (eta) {
+                                            var arg = page;
+                                            var partial_arg = (function (param) {
+                                                  return (function (param$1, param$2) {
+                                                      return loadGlobalFeed(param, arg, param$1, param$2);
+                                                    });
+                                                })(undefined);
+                                            return (function (param) {
+                                                return partial_arg(eta, param);
+                                              });
                                           }), /* () */0);
                                   }
                                   return /* () */0;
@@ -319,9 +324,10 @@ function make(user, _) {
                                 /* files */state[/* files */1],
                                 /* tags */action[0],
                                 /* articlesCount */state[/* articlesCount */3],
-                                /* currentPage */state[/* currentPage */4],
-                                /* feed */state[/* feed */5],
-                                /* togglingFavorites */state[/* togglingFavorites */6]
+                                /* filesCount */state[/* filesCount */4],
+                                /* currentPage */state[/* currentPage */5],
+                                /* feed */state[/* feed */6],
+                                /* togglingFavorites */state[/* togglingFavorites */7]
                               ]]);
                 case 3 : 
                     var article = action[1];
@@ -341,9 +347,10 @@ function make(user, _) {
                                 /* files */state[/* files */1],
                                 /* tags */state[/* tags */2],
                                 /* articlesCount */state[/* articlesCount */3],
-                                /* currentPage */state[/* currentPage */4],
-                                /* feed */state[/* feed */5],
-                                /* togglingFavorites */state[/* togglingFavorites */6]
+                                /* filesCount */state[/* filesCount */4],
+                                /* currentPage */state[/* currentPage */5],
+                                /* feed */state[/* feed */6],
+                                /* togglingFavorites */state[/* togglingFavorites */7]
                               ]]);
                 case 4 : 
                     var match = action[0];
@@ -352,20 +359,46 @@ function make(user, _) {
                                 /* files */state[/* files */1],
                                 /* tags */state[/* tags */2],
                                 /* articlesCount */match[1],
+                                /* filesCount */state[/* filesCount */4],
                                 /* currentPage */match[2],
-                                /* feed */state[/* feed */5],
-                                /* togglingFavorites */state[/* togglingFavorites */6]
+                                /* feed */state[/* feed */6],
+                                /* togglingFavorites */state[/* togglingFavorites */7]
                               ]]);
                 case 5 : 
+                    var file = action[1];
+                    var guid = action[0];
+                    var files = RemoteData.map((function (files) {
+                            return Belt_List.map(files, (function (x) {
+                                          var match = x[/* guid */5] === guid;
+                                          if (match) {
+                                            return file;
+                                          } else {
+                                            return x;
+                                          }
+                                        }));
+                          }), state[/* files */1]);
+                    return /* Update */Block.__(0, [/* record */[
+                                /* articles */state[/* articles */0],
+                                /* files */files,
+                                /* tags */state[/* tags */2],
+                                /* articlesCount */state[/* articlesCount */3],
+                                /* filesCount */state[/* filesCount */4],
+                                /* currentPage */state[/* currentPage */5],
+                                /* feed */state[/* feed */6],
+                                /* togglingFavorites */state[/* togglingFavorites */7]
+                              ]]);
                 case 6 : 
-                    throw [
-                          Caml_builtin_exceptions.match_failure,
-                          /* tuple */[
-                            "Home.re",
-                            155,
-                            4
-                          ]
-                        ];
+                    var match$1 = action[0];
+                    return /* Update */Block.__(0, [/* record */[
+                                /* articles */state[/* articles */0],
+                                /* files */match$1[0],
+                                /* tags */state[/* tags */2],
+                                /* articlesCount */state[/* articlesCount */3],
+                                /* filesCount */match$1[1],
+                                /* currentPage */match$1[2],
+                                /* feed */state[/* feed */6],
+                                /* togglingFavorites */state[/* togglingFavorites */7]
+                              ]]);
                 
               }
             }),

@@ -39,14 +39,12 @@ function file(json) {
   return /* record */[
           /* createDate */Json_decode.field("createDate", Json_decode.date, json),
           /* createUser */Json_decode.field("createUser", Json_decode.string, json),
+          /* storedFileName */Json_decode.field("storedFileName", Json_decode.string, json),
           /* fileSize */Json_decode.field("fileSize", Json_decode.$$int, json),
           /* folder */Json_decode.field("folder", Json_decode.string, json),
           /* guid */Json_decode.field("guid", Json_decode.string, json),
           /* name */Json_decode.field("name", Json_decode.string, json),
           /* sortOrder */Json_decode.field("sortOrder", Json_decode.$$int, json),
-          /* storageFullPath */Json_decode.field("storageFullPath", Json_decode.string, json),
-          /* storageFileName */Json_decode.field("storageFileName", Json_decode.string, json),
-          /* dateType */Json_decode.field("type", Json_decode.string, json),
           /* updateDate */Json_decode.field("updateDate", Json_decode.date, json)
         ];
 }
@@ -77,14 +75,11 @@ function user(json) {
           /* bio */Json_decode.field("bio", (function (param) {
                   return Json_decode.optional(Json_decode.string, param);
                 }), json),
-          /* createdAt */Json_decode.field("createdAt", Json_decode.date, json),
           /* email */Json_decode.field("email", Json_decode.string, json),
-          /* id */Json_decode.field("id", Json_decode.$$int, json),
           /* image */Json_decode.field("image", (function (param) {
                   return Json_decode.optional(Json_decode.string, param);
                 }), json),
           /* token */Json_decode.field("token", Json_decode.string, json),
-          /* updatedAt */Json_decode.field("updatedAt", Json_decode.date, json),
           /* username */Json_decode.field("username", Json_decode.string, json)
         ];
 }
