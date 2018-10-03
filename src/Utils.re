@@ -4,6 +4,8 @@ let arrayEl = ReasonReact.array;
 
 let nullEl = ReasonReact.null;
 
+[@bs.val] external alert: string => unit = "alert";
+
 [@bs.val] external requireCSS: string => unit = "require";
 
 [@bs.val] external requireAssetURI: string => string = "require";
@@ -13,13 +15,12 @@ let id = a => a;
 let getSomeErrors = (results, fields) => {
   let validation =
     fields
-    ->Belt.List.mapU(
-        (. field) =>
-          switch (field |> results) {
-          | Some(Formality.Invalid(message)) => [message]
-          | Some(Valid)
-          | None => []
-          },
+    ->Belt.List.mapU((. field) =>
+        switch (field |> results) {
+        | Some(Formality.Invalid(message)) => [message]
+        | Some(Valid)
+        | None => []
+        }
       )
     ->Belt.List.flatten;
   switch (validation) {

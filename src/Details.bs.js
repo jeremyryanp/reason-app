@@ -12,7 +12,6 @@ var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
 var API$ReasonReactRealworldExampleApp = require("./API.bs.js");
 var Img$ReasonReactRealworldExampleApp = require("./Img.bs.js");
 var Utils$ReasonReactRealworldExampleApp = require("./Utils.bs.js");
-var Comment$ReasonReactRealworldExampleApp = require("./Comment.bs.js");
 var Decoder$ReasonReactRealworldExampleApp = require("./Decoder.bs.js");
 
 function redirectToLoginPage() {
@@ -220,14 +219,14 @@ function loadArticle(slug, param) {
   var send = param[/* send */3];
   API$ReasonReactRealworldExampleApp.getArticle(slug, /* () */0).then((function (result) {
             if (result.tag) {
-              Curry._1(send, /* UpdateArticle */Block.__(8, [/* Failure */Block.__(0, ["failed to fetch article"])]));
+              Curry._1(send, /* UpdateArticle */Block.__(8, [/* Failure */Block.__(0, ["failed to fetch file"])]));
             } else {
               var article = Json_decode.field("article", Decoder$ReasonReactRealworldExampleApp.article, result[0]);
               Curry._1(send, /* UpdateArticle */Block.__(8, [/* Success */Block.__(1, [article])]));
             }
             return Promise.resolve(/* () */0);
           })).catch((function () {
-          Curry._1(send, /* UpdateArticle */Block.__(8, [/* Failure */Block.__(0, ["failed to fetch article"])]));
+          Curry._1(send, /* UpdateArticle */Block.__(8, [/* Failure */Block.__(0, ["failed to fetch file"])]));
           return Promise.resolve(/* () */0);
         }));
   return /* () */0;
@@ -384,9 +383,9 @@ function deleteComment(slug, id, _, param) {
   return /* () */0;
 }
 
-var component$3 = ReasonReact.reducerComponent("Article");
+var component$3 = ReasonReact.reducerComponent("Details");
 
-function make$3(user, slug, _) {
+function make$3(guid, _) {
   return /* record */[
           /* debugName */component$3[/* debugName */0],
           /* reactClassInternal */component$3[/* reactClassInternal */1],
@@ -394,21 +393,15 @@ function make$3(user, slug, _) {
           /* willReceiveProps */component$3[/* willReceiveProps */3],
           /* didMount */(function (param) {
               var handle = param[/* handle */0];
-              Curry._2(handle, loadArticle, slug);
-              return Curry._2(handle, loadComments, slug);
+              Curry._2(handle, loadArticle, guid);
+              return Curry._2(handle, loadComments, guid);
             }),
           /* didUpdate */component$3[/* didUpdate */5],
           /* willUnmount */component$3[/* willUnmount */6],
           /* willUpdate */component$3[/* willUpdate */7],
           /* shouldUpdate */component$3[/* shouldUpdate */8],
           /* render */(function (param) {
-              var state = param[/* state */1];
-              var hidingDeleteIcons = state[/* hidingDeleteIcons */4];
-              var comments = state[/* comments */3];
-              var article = state[/* article */2];
-              var favoriteAction = state[/* favoriteAction */1];
-              var followAction = state[/* followAction */0];
-              var handle = param[/* handle */0];
+              var article = param[/* state */1][/* article */2];
               var tmp;
               tmp = typeof article === "number" ? (
                   article === 0 ? Utils$ReasonReactRealworldExampleApp.nullEl : Utils$ReasonReactRealworldExampleApp.strEl("...")
@@ -433,57 +426,6 @@ function make$3(user, slug, _) {
               tmp$4 = typeof article === "number" || !article.tag ? "" : article[0][/* author */9][/* username */0];
               var tmp$5;
               tmp$5 = typeof article === "number" || !article.tag ? Utils$ReasonReactRealworldExampleApp.nullEl : Utils$ReasonReactRealworldExampleApp.strEl(article[0][/* updatedAt */6].toISOString());
-              var tmp$6;
-              tmp$6 = typeof article === "number" ? (
-                  article === 0 ? React.createElement("div", undefined, Utils$ReasonReactRealworldExampleApp.strEl("Initilizing...")) : React.createElement("div", undefined, Utils$ReasonReactRealworldExampleApp.strEl("Loading..."))
-                ) : (
-                  article.tag ? React.createElement("div", {
-                          className: "col-md-12",
-                          dangerouslySetInnerHTML: {
-                            __html: article[0][/* body */3]
-                          }
-                        }) : React.createElement("div", undefined, Utils$ReasonReactRealworldExampleApp.strEl(article[0]))
-                );
-              var tmp$7;
-              tmp$7 = typeof article === "number" || !article.tag ? Utils$ReasonReactRealworldExampleApp.nullEl : React.createElement("ul", {
-                      className: "tag-list"
-                    }, Utils$ReasonReactRealworldExampleApp.arrayEl(Belt_List.toArray(Belt_List.mapU(article[0][/* tagList */4], (function (item) {
-                                    return React.createElement("li", {
-                                                key: item,
-                                                className: "tag-default tag-pill tag-outline"
-                                              }, Utils$ReasonReactRealworldExampleApp.strEl(item));
-                                  })))));
-              var tmp$8;
-              tmp$8 = typeof article === "number" || !article.tag ? "" : "/#/profile/" + article[0][/* author */9][/* username */0];
-              var tmp$9;
-              var exit$1 = 0;
-              if (typeof article === "number") {
-                exit$1 = 1;
-              } else {
-                tmp$9 = article.tag ? ReasonReact.element(undefined, undefined, Img$ReasonReactRealworldExampleApp.make(Js_primitive.some(article[0][/* author */9][/* image */2]), undefined, undefined, undefined, /* array */[])) : ReasonReact.element(undefined, undefined, Img$ReasonReactRealworldExampleApp.make(undefined, undefined, undefined, undefined, /* array */[]));
-              }
-              if (exit$1 === 1) {
-                tmp$9 = ReasonReact.element(undefined, undefined, Img$ReasonReactRealworldExampleApp.make(undefined, undefined, undefined, undefined, /* array */[]));
-              }
-              var tmp$10;
-              tmp$10 = typeof article === "number" || !article.tag ? "" : "/#/profile/" + article[0][/* author */9][/* username */0];
-              var tmp$11;
-              tmp$11 = typeof article === "number" || !article.tag ? "" : article[0][/* author */9][/* username */0];
-              var tmp$12;
-              tmp$12 = typeof article === "number" || !article.tag ? Utils$ReasonReactRealworldExampleApp.nullEl : Utils$ReasonReactRealworldExampleApp.strEl(article[0][/* updatedAt */6].toISOString());
-              var tmp$13;
-              tmp$13 = typeof comments === "number" ? (
-                  comments === 0 ? Utils$ReasonReactRealworldExampleApp.strEl("Initilizing...") : Utils$ReasonReactRealworldExampleApp.strEl("Loading...")
-                ) : (
-                  comments.tag ? Utils$ReasonReactRealworldExampleApp.arrayEl(Belt_List.toArray(Belt_List.mapU(comments[0], (function (comment) {
-                                    var id = comment[/* id */0];
-                                    return ReasonReact.element(String(id), undefined, make$2(Belt_List.some(hidingDeleteIcons, (function (x) {
-                                                          return x === id;
-                                                        })), Curry._1(handle, (function (param, param$1) {
-                                                          return deleteComment(slug, id, param, param$1);
-                                                        })), comment, user, /* array */[]));
-                                  })))) : Utils$ReasonReactRealworldExampleApp.strEl(comments[0])
-                );
               return React.createElement("div", {
                           className: "article-page"
                         }, React.createElement("div", {
@@ -501,50 +443,7 @@ function make$3(user, slug, _) {
                                               href: tmp$3
                                             }, Utils$ReasonReactRealworldExampleApp.strEl(tmp$4)), React.createElement("span", {
                                               className: "date"
-                                            }, tmp$5)), ReasonReact.element(undefined, undefined, make$1(RemoteData.isLoading(followAction), user, article, Curry._1(handle, (function (param, param$1) {
-                                                    return followUser(article, param, param$1);
-                                                  })), Curry._1(handle, (function (param, param$1) {
-                                                    return redirectToEditorPage(article, param, param$1);
-                                                  })), /* array */[])), Utils$ReasonReactRealworldExampleApp.strEl(" "), ReasonReact.element(undefined, undefined, make(RemoteData.isLoading(favoriteAction), user, article, Curry._1(handle, (function (param, param$1) {
-                                                    return favoriteArticle(article, param, param$1);
-                                                  })), Curry._1(handle, (function (param, param$1) {
-                                                    return deleteArticle(article, param, param$1);
-                                                  })), /* array */[]))))), React.createElement("div", {
-                              className: "container page"
-                            }, React.createElement("div", {
-                                  className: "row article-content"
-                                }, tmp$6, tmp$7), React.createElement("hr", undefined), React.createElement("div", {
-                                  className: "article-actions"
-                                }, React.createElement("div", {
-                                      className: "article-meta"
-                                    }, React.createElement("a", {
-                                          href: tmp$8
-                                        }, tmp$9), React.createElement("div", {
-                                          className: "info"
-                                        }, React.createElement("a", {
-                                              className: "author",
-                                              href: tmp$10
-                                            }, Utils$ReasonReactRealworldExampleApp.strEl(tmp$11)), React.createElement("span", {
-                                              className: "date"
-                                            }, tmp$12)), ReasonReact.element(undefined, undefined, make$1(RemoteData.isLoading(followAction), user, article, Curry._1(handle, (function (param, param$1) {
-                                                    return followUser(article, param, param$1);
-                                                  })), Curry._1(handle, (function (param, param$1) {
-                                                    return redirectToEditorPage(article, param, param$1);
-                                                  })), /* array */[])), Utils$ReasonReactRealworldExampleApp.strEl(" "), ReasonReact.element(undefined, undefined, make(RemoteData.isLoading(favoriteAction), user, article, Curry._1(handle, (function (param, param$1) {
-                                                    return favoriteArticle(article, param, param$1);
-                                                  })), Curry._1(handle, (function (param, param$1) {
-                                                    return deleteArticle(article, param, param$1);
-                                                  })), /* array */[])))), React.createElement("div", {
-                                  className: "row"
-                                }, React.createElement("div", {
-                                      className: "col-xs-12 col-md-8 offset-md-2"
-                                    }, ReasonReact.element(undefined, undefined, Comment$ReasonReactRealworldExampleApp.make((function (state, submissionCallbacks) {
-                                                var partial_arg;
-                                                partial_arg = typeof article === "number" || article.tag !== 1 ? "" : article[0][/* slug */0];
-                                                return Curry._2(handle, (function (param, param$1) {
-                                                              return addComments(partial_arg, submissionCallbacks, param, param$1);
-                                                            }), state);
-                                              }), user, /* array */[])), tmp$13))));
+                                            }, tmp$5))))));
             }),
           /* initialState */(function () {
               return /* record */[

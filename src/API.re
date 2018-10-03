@@ -2,15 +2,16 @@ open Utils;
 
 [@bs.val] external alert: string => unit = "alert";
 
-let host = "http://localhost:8080/rest-client";
+let host = "http://osrs-1500001678:8080/rest-client";
 
 let optToQueryString = (prefix, opt) =>
   opt->(Belt.Option.mapWithDefault("", (++)(prefix)));
 
 let getResultIfOk = res => {
+  /*alert("getResultIfOk");*/
+
   open Js.Promise;
   open Belt.Result;
-
   let isOk = res |> Fetch.Response.ok;
 
   res
@@ -58,7 +59,7 @@ let makeFetchInit =
 
   Fetch.RequestInit.make(
     ~body?,
-    ~method_,
+    ~method_=Fetch.Get,
     ~credentials?,
     ~headers=headers |> Fetch.HeadersInit.make,
     (),
@@ -66,18 +67,25 @@ let makeFetchInit =
 };
 
 let listFiles = (~limit=20, ~offset=0, ()) => {
-  open Js.Promise;
-
+  /*
+     open Js.Promise;
+   */
   let url =
     host
-    ++ "/api/content/file"
+    ++ "/api/content/file/"
     ++ "limit="
     ++ string_of_int(limit)
     ++ "&offset="
     ++ string_of_int(offset);
+  /*
+     url->(Fetch.fetchWithInit(makeFetchInit(~authorization=true, ())))
+   */
+  Js.Promise.(Fetch.fetch(url) |> then_(getResultIfOk));
+};
 
-  url->(Fetch.fetchWithInit(makeFetchInit(~authorization=true, ())))
-  |> then_(getResultIfOk);
+let getFile = (~guid, ()) => {
+  let url = host ++ "/api/content/file/" ++ "guid=" ++ guid;
+  Js.Promise.(Fetch.fetch(url) |> then_(getResultIfOk));
 };
 
 let listArticlesFeed = (~limit=20, ~offset=0, ()) => {
@@ -249,11 +257,16 @@ let deleteComment = (~slug, ~id, ()) => {
 };
 
 let user = () => {
-  open Js.Promise;
+  /*
+   open Js.Promise;
+   */
   let url = host ++ "/api/user";
+  /*
+   url->(Fetch.fetchWithInit(makeFetchInit(~authorization=true, ())))
+   |> then_(getResultIfOk);
+   */
 
-  url->(Fetch.fetchWithInit(makeFetchInit(~authorization=true, ())))
-  |> then_(getResultIfOk);
+  Js.Promise.(Fetch.fetch(url) |> then_(getResultIfOk));
 };
 
 let updateUser = (~email, ~username, ~password, ~image, ~bio, ()) => {
@@ -332,8 +345,6 @@ let register = (~email, ~password, ~username, ()) => {
 let login = (~email, ~password, ()) => {
   open Js.Promise;
   let url = host ++ "/api/user/login";
-
-  alert("lets do this");
 
   url
   ->(

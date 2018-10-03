@@ -85,7 +85,7 @@ function make($staropt$star, user, _) {
                   return Utils$ReasonReactRealworldExampleApp.strEl("Loading...");
                 }
               } else if (user.tag) {
-                var image = user[0][/* image */4];
+                var image = user[0][/* image */2];
                 return ReasonReact.element(undefined, undefined, Curry._3(FormContainer[/* make */8], "", onSubmit, (function (form) {
                                   var match = form[/* status */1];
                                   var errors;

@@ -1,3 +1,5 @@
+[@bs.val] external alert: string => unit = "alert";
+
 let author = (json: Js.Json.t): Types.author =>
   Json.Decode.{
     username: json |> field("username", string),
@@ -26,14 +28,12 @@ let file = (json: Js.Json.t): Types.file =>
   Json.Decode.{
     createDate: json |> field("createDate", date),
     createUser: json |> field("createUser", string),
+    storedFileName: json |> field("storedFileName", string),
     fileSize: json |> field("fileSize", int),
     folder: json |> field("folder", string),
     guid: json |> field("guid", string),
     name: json |> field("name", string),
     sortOrder: json |> field("sortOrder", int),
-    storageFullPath: json |> field("storageFullPath", string),
-    storageFileName: json |> field("storageFileName", string),
-    dateType: json |> field("type", string),
     updateDate: json |> field("updateDate", date),
   };
 
@@ -61,7 +61,4 @@ let user = (json: Js.Json.t): Types.User.t =>
     username: json |> field("username", string),
     bio: json |> field("bio", optional(string)),
     image: json |> field("image", optional(string)),
-    id: json |> field("id", int),
-    createdAt: json |> field("createdAt", date),
-    updatedAt: json |> field("updatedAt", date),
   };
